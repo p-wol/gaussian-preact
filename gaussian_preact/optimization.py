@@ -99,18 +99,22 @@ def find_density(theta, surv_kernel, density, integrand,
         optimizer.step()
         scheduler.step(loss)
         
+        """
+        # Show the evolution of the loss
         if epoch % 50 == 0 or epoch == epochs - 1:
             print('    epoch {} ; loss: {:.6f}'.format(epoch, loss.item()))
-        #print('lst_y = {}'.format(lst_y))
-        """for n, t in density.named_parameters():
-            print('{} = {:.6f}'.format(n, t.item()))"""
-        #print('epoch: ', epoch, '; loss: ', loss.item())
-    
+        """
+        """
+        # Show the evolution of the parameters
+        for n, t in density.named_parameters():
+            print('{} = {:.6f}'.format(n, t.item()))
+        """
+   
+    # Compute the final L-infinity distance with the SciPy integration function (more precise)
     final_surv = torch.empty_like(inputs)
     for i, z in enumerate(inputs):
         final_surv[i] = integrand.integrate_scipy(z, 0, np.inf)
     loss = compute_Linf_error(targets, final_surv)
-    print('Final loss: {:.6f}'.format(loss))
         
     return density, loss
 

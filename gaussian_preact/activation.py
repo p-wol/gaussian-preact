@@ -4,7 +4,7 @@ import numpy as np
 
 class ActivationFunction(torch.nn.Module):
     """
-    Function representing the activation function, build in such a way it is easy to compute
+    Function representing the activation function, built in such a way it is easy to compute
     and backpropagate for pytorch.
 
     f(x) = a * tanh(b * x) * ((|x| + c)^alpha + d) * (log(|x| + f) + g)

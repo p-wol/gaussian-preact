@@ -12,5 +12,7 @@ setup(
     long_description=open('README.md').read(),
     install_requires=[
         "pytorch >= 1.13.1",
+        "scipy",
+        "numpy",
     ],
 )

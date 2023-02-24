@@ -113,3 +113,35 @@ def find_density(theta, surv_kernel, density, integrand,
     print('Final loss: {:.6f}'.format(loss))
         
     return density, loss
+
+
+def find_activation(theta, activation, act_inter_x, act_inter_y, inputs,
+                    lr = .01, epochs = 100):
+    # Build targets
+    # 1 - Build functional interpolation on a symmetric interval around 0
+    f_interp = lambda x: np.interp(x, torch.concat((-act_inter_x.flip(0), act_inter_x)),
+                                   torch.concat((-act_inter_y.flip(0), act_inter_y)))
+
+    # 2 - Build targets
+    targets = torch.tensor(f_interp(inputs))
+
+    # Set up the optimizer
+    optimizer = torch.optim.Adam(activation.parameters(), lr = .01)
+
+    # Optimization
+    for epoch in range(epochs):
+        optimizer.zero_grad()
+
+        outputs = activation(inputs)
+        loss = (targets - outputs).pow(2).mean()
+        """
+        Note: minimizing a L2 loss does not provide any guarantee on the Gaussianity of W * Y.
+        The L2 loss has been chosen by convenience.
+        """
+
+        loss.backward()
+        optimizer.step()
+
+    error = np.sqrt(loss.item())
+
+    return activation, error

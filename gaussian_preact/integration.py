@@ -7,6 +7,8 @@ from scipy import special, integrate
 
 class ParameterizedFunction(torch.nn.Module):
     """
+    Function representing the density of Y.
+
     theta: parameter of the Weibull distribution
     1/2 = 1/theta + 1/theta_conj
     f(x) = gamma * alpha / lambda_1^alpha x^(alpha - 1) exp(-(x / lambda_1^)alpha) + sqrt(2/pi) 1/Gamma(1 - 1/theta) exp(-(x/lambda_2)^theta_conj)

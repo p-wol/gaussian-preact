@@ -7,6 +7,7 @@ def surv_Gaussian_abs(x):
     """
     Survival function of the absolute value of Normal(0, 1).
     """
+
     return 1 - torch.erf(x/np.sqrt(2))
 
 def build_surv_kernel_Weib(theta, lambd):
@@ -14,6 +15,7 @@ def build_surv_kernel_Weib(theta, lambd):
     Let S_W(x) = exp(-(x/lambd)**theta) be the survival function of Weibull(theta, lambd).
     This function builds the function: (z, y) -> S_W(z/y)
     """
+
     def surv_kernel_Weib(z, y):
         return np.exp(-np.power((z/y)/lambd, theta))
     return surv_kernel_Weib
@@ -22,12 +24,15 @@ def compute_Linf_error(y_targets, y_samples):
     """
     Given two vectors y_targets and y_samples, computes the L-infinity norm between the two.
     """
+
     return (y_targets - y_samples).abs().max()
 
 def find_density(theta, surv_kernel, density, integrand, 
         inputs, targets, lr = .001, epochs = 100, scipy_update_period = 10,
         theta_conj_phases = 2):
     """
+    Performs an optimization of the parameters of 'density' to make W * Y Gaussian.
+
     We want to make the random variable W * Y Gaussian, provided that:
         * the survival function S_W of W is: x -> surv_kernel(x*y, y), for all y;
         * the density f_Y of Y is: x -> density(x).
@@ -121,6 +126,11 @@ def find_density(theta, surv_kernel, density, integrand,
 
 def find_activation(theta, activation, act_inter_x, act_inter_y, inputs,
                     lr = .01, epochs = 100):
+    """
+    Performs an optimization of the parameters of the function 'activation', so that the
+    graph of 'activation' is the closest possible to the graph (act_inter_x, act_inter_y).
+    """
+
     # Build targets
     # 1 - Build functional interpolation on a symmetric interval around 0
     f_interp = lambda x: np.interp(x, torch.concat((-act_inter_x.flip(0), act_inter_x)),

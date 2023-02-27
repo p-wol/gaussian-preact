@@ -1,5 +1,5 @@
 # gaussian-preact
-Computations related to the paper "Gaussian Pre-Activations in Neural Networks: Myth or Reality?"
+Computations related to the paper [Gaussian Pre-Activations in Neural Networks: Myth or Reality?](https://arxiv.org/abs/2205.12379) (P. Wolinski, J. Arbel).
 
 This package computes the functions $\phi_{\theta}$. One can try the main features of this package by using `Example01_prototype.ipynb`.
 

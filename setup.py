@@ -11,7 +11,6 @@ setup(
     description='Computations related to the paper "Gaussian Pre-Activations in Neural Networks: Myth or Reality?"',
     long_description=open('README.md').read(),
     install_requires=[
-        "pytorch >= 1.13.1",
         "scipy >= 1.9.3",
         "numpy >= 1.23.5",
     ],

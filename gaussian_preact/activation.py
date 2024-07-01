@@ -149,6 +149,22 @@ class ActivationFunction(torch.nn.Module):
 
             return self.forward(x)
 
+    def to_function(self):
+        alpha = self.alpha.item()
+
+        a = self.a.item()
+        b = self.b.item()
+        c = self.c.item()
+        d = self.d.item()
+
+        f = self.f.item()
+        g = self.g.item()
+
+        def func(x):
+            return act_function(x, alpha, a, b, c, d, f, g)
+
+        return func
+
 def act_function_pos(x, alpha, a, b, c, d, f, g, h):
     """
     f(x) = a * sigmoid(b * x + h) * ((softplus(x) + c)^alpha + d) * (log(softplus(x) + f) + g)
@@ -224,3 +240,20 @@ class ActivationFunctionPos(torch.nn.Module):
                 x = x.to(device = self.a.device)
 
             return self.forward(x)
+
+    def to_function(self):
+        alpha = self.alpha.item()
+
+        a = self.a.item()
+        b = self.b.item()
+        h = self.h.item()
+        c = self.c.item()
+        d = self.d.item()
+
+        f = self.f.item()
+        g = self.g.item()
+
+        def func(x):
+            return act_function_pos(x, alpha, a, b, c, d, f, g, h)
+
+        return func

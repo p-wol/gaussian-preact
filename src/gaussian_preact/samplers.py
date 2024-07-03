@@ -9,8 +9,12 @@ def build_sampler_weibull(theta, lambd = None, normalized = False, device = 'cpu
             lambd = 1.
         else:
             raise ValueError('Error: a fixed value for lambda and normalized == True are incompatible.')
-    if not normalized and lambd is None:
-        lambd = 1.
+    else:
+        if lambd is None:
+            lambd = 1.
+        else:
+            # lambd is already set
+            pass
 
     theta = torch.tensor(theta, device = device)
     lambd = torch.tensor(lambd, device = device)

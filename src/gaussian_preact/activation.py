@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import numpy as np
 
 def act_function(x, alpha, a, b, c, d, f, g):
     """
@@ -95,7 +94,7 @@ class ActivationFunctionTraining(torch.nn.Module):
         Cp = 1 / (x + self.f)
 
         App = -2 * torch.pow(self.b, 2) * tanh_bx * (1 - torch.pow(tanh_bx, 2))
-        Bpp = self.alpha * (self.alpha - 1) * torch.pow(x + self.c, alpha - 2)
+        Bpp = self.alpha * (self.alpha - 1) * torch.pow(x + self.c, self.alpha - 2)
         Cpp = - 1 / torch.pow(x + self.f, 2)
 
         ret = App * B * C + A * Bpp * C + A * B * Cpp
@@ -121,7 +120,6 @@ class ActivationFunction(torch.nn.Module):
     """
     def __init__(self, act_function):
         super(ActivationFunction, self).__init__()
-        dtype = torch.get_default_dtype()
 
         self.register_buffer('alpha', act_function.alpha.clone().detach())
         
@@ -216,7 +214,6 @@ class ActivationFunctionPos(torch.nn.Module):
     """
     def __init__(self, act_function):
         super(ActivationFunctionPos, self).__init__()
-        dtype = torch.get_default_dtype()
         
         self.register_buffer('alpha', act_function.alpha.clone().detach())
         

@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import scipy
 from scipy import special, integrate
 
 

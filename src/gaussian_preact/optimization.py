@@ -1,7 +1,5 @@
 import torch
-import torch.nn as nn
 import numpy as np
-from .integration import ParameterizedFunction, Integrand
 
 def surv_Gaussian_abs(x):
     """
@@ -133,8 +131,9 @@ def find_activation(theta, activation, act_inter_x, act_inter_y, inputs,
 
     # Build targets
     # 1 - Build functional interpolation on a symmetric interval around 0
-    f_interp = lambda x: np.interp(x, torch.concat((-act_inter_x.flip(0), act_inter_x)),
-                                   torch.concat((-act_inter_y.flip(0), act_inter_y)))
+    def f_interp(x):
+        return np.interp(x, torch.concat((-act_inter_x.flip(0), act_inter_x)),
+                         torch.concat((-act_inter_y.flip(0), act_inter_y)))
 
     # 2 - Build targets
     targets = torch.tensor(f_interp(inputs))

@@ -1,5 +1,17 @@
 import torch
 import torch.nn as nn
+from importlib.resources import files
+
+def build_act_function(act_type, theta):
+    dirname = files('gaussian_preact').joinpath('../../objects/')
+    if act_type == 'odd':
+        dct = torch.load(dirname.joinpath('ActFunction_theta-{:.2f}.pkl'.format(theta)))
+    elif act_type == 'pos':
+        dct = torch.load(dirname.joinpath('ActFunctionPos_theta-{:.2f}.pkl'.format(theta)))
+    else:
+        raise ValueError(f'Unknown value for "act_type". Must be "odd" or "pos", found "{act_type}".')
+
+    return dct['activation'].to_function()
 
 def act_function(x, alpha, a, b, c, d, f, g):
     """

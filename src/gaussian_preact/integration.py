@@ -54,7 +54,7 @@ class Integrand(torch.nn.Module):
         * self.density: density of Y.
 
     Reminder: the CDF F of W * Y can be computed in the following way:
-        F(z) = \int_0^{\infty} S_W(z/x) f_Y(x) dx        (1)
+        F(z) = int_0^{infty} S_W(z/x) f_Y(x) dx        (1)
 
     Computation of the integral:
         a) the computation of the integral (1) is a critical step of the whole process,

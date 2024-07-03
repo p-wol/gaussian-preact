@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gaussian-preact',
-    version='0.1.0',
+    version='0.2.0',
     author='Pierre Wolinski',
     author_email='pierre.wolinski@normalesup.org',
     packages=find_packages('src'),

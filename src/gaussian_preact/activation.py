@@ -13,12 +13,35 @@ def build_act_function(act_type, theta):
 
     return dct['activation'].to_function()
 
+def build_act_function_p(act_type, theta):
+    dirname = files('gaussian_preact').joinpath('../../objects/')
+    if act_type == 'odd':
+        dct = torch.load(dirname.joinpath('ActFunction_theta-{:.2f}.pkl'.format(theta)))
+    elif act_type == 'pos':
+        dct = torch.load(dirname.joinpath('ActFunctionPos_theta-{:.2f}.pkl'.format(theta)))
+    else:
+        raise ValueError(f'Unknown value for "act_type". Must be "odd" or "pos", found "{act_type}".')
+
+    return dct['activation'].to_function_p()
+
 def act_function(x, alpha, a, b, c, d, f, g):
     """
     f(x) = a * tanh(b * x) * ((|x| + c)^alpha + d) * (log(|x| + f) + g)
     """
     return a * torch.tanh(b * x) * (torch.pow(torch.abs(x) + c, alpha) + d) * \
                 (torch.log(torch.abs(x) + f) + g)
+
+def act_function_p(x, alpha, a, b, c, d, f, g):
+    x = torch.abs(x)
+    A = torch.tanh(x * b)
+    B = (torch.pow(torch.abs(x) + c, alpha) + d)
+    C = (torch.log(torch.abs(x) + f) + g)
+
+    ret = b * (1 - torch.pow(torch.tanh(b * x), 2)) * B * C
+    ret = ret + A * alpha * torch.pow(x + c, alpha - 1) * C
+    ret = ret + A * B / (x + f)
+
+    return a * ret
 
 class ActivationFunctionTraining(torch.nn.Module):
     """
@@ -175,12 +198,40 @@ class ActivationFunction(torch.nn.Module):
 
         return func
 
+    def to_function_p(self):
+        alpha = self.alpha.item()
+
+        a = self.a.item()
+        b = self.b.item()
+        c = self.c.item()
+        d = self.d.item()
+
+        f = self.f.item()
+        g = self.g.item()
+
+        def func(x):
+            return act_function_p(x, alpha, a, b, c, d, f, g)
+
+        return func
+
 def act_function_pos(x, alpha, a, b, c, d, f, g, h):
     """
     f(x) = a * sigmoid(b * x + h) * ((softplus(x) + c)^alpha + d) * (log(softplus(x) + f) + g)
     """
     return a * torch.sigmoid(b * x + h) * (torch.pow(torch.nn.functional.softplus(x) + c, alpha) + d) * \
         (torch.log(torch.nn.functional.softplus(x) + f) + g)
+
+def act_function_pos_p(x, alpha, a, b, c, d, f, g, h):
+    s = torch.sigmoid(b * x + h)
+    A = a * s
+    Ap = a * s * (1 - s) * b
+    t = torch.nn.functional.softplus(x)
+    u = torch.sigmoid(x)
+    B = torch.pow(t + c, alpha) + d
+    Bp = alpha * torch.pow(t + c, alpha - 1) * u
+    C = torch.log(t + f) + g
+    Cp = (1 / (t + f)) * u
+    return Ap * B * C + A * Bp * C + A * B * Cp
 
 class ActivationFunctionPosTraining(torch.nn.Module):
     """
@@ -264,5 +315,22 @@ class ActivationFunctionPos(torch.nn.Module):
 
         def func(x):
             return act_function_pos(x, alpha, a, b, c, d, f, g, h)
+
+        return func
+
+    def to_function_p(self):
+        alpha = self.alpha.item()
+
+        a = self.a.item()
+        b = self.b.item()
+        h = self.h.item()
+        c = self.c.item()
+        d = self.d.item()
+
+        f = self.f.item()
+        g = self.g.item()
+
+        def func(x):
+            return act_function_pos_p(x, alpha, a, b, c, d, f, g, h)
 
         return func

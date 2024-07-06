@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from importlib.resources import files
 
-def build_act_function(act_type, theta):
+def build_act_function(act_type, theta, with_np = False):
     dirname = files('gaussian_preact').joinpath('../../objects/')
     if act_type == 'odd':
         dct = torch.load(dirname.joinpath('ActFunction_theta-{:.2f}.pkl'.format(theta)))
@@ -11,9 +11,9 @@ def build_act_function(act_type, theta):
     else:
         raise ValueError(f'Unknown value for "act_type". Must be "odd" or "pos", found "{act_type}".')
 
-    return dct['activation'].to_function()
+    return dct['activation'].to_function(with_np)
 
-def build_act_function_p(act_type, theta):
+def build_act_function_p(act_type, theta, with_np = False):
     dirname = files('gaussian_preact').joinpath('../../objects/')
     if act_type == 'odd':
         dct = torch.load(dirname.joinpath('ActFunction_theta-{:.2f}.pkl'.format(theta)))
@@ -22,7 +22,7 @@ def build_act_function_p(act_type, theta):
     else:
         raise ValueError(f'Unknown value for "act_type". Must be "odd" or "pos", found "{act_type}".')
 
-    return dct['activation'].to_function_p()
+    return dct['activation'].to_function_p(with_np)
 
 def act_function(x, alpha, a, b, c, d, f, g):
     """
@@ -182,7 +182,7 @@ class ActivationFunction(torch.nn.Module):
 
             return self.forward(x)
 
-    def to_function(self):
+    def to_function(self, with_np = False):
         alpha = self.alpha.item()
 
         a = self.a.item()
@@ -193,12 +193,17 @@ class ActivationFunction(torch.nn.Module):
         f = self.f.item()
         g = self.g.item()
 
-        def func(x):
-            return act_function(x, alpha, a, b, c, d, f, g)
+        if with_np:
+            def func(x):
+                x = torch.tensor(x)
+                return act_function(x, alpha, a, b, c, d, f, g)
+        else:
+            def func(x):
+                return act_function(x, alpha, a, b, c, d, f, g)
 
         return func
 
-    def to_function_p(self):
+    def to_function_p(self, with_np = False):
         alpha = self.alpha.item()
 
         a = self.a.item()
@@ -209,8 +214,13 @@ class ActivationFunction(torch.nn.Module):
         f = self.f.item()
         g = self.g.item()
 
-        def func(x):
-            return act_function_p(x, alpha, a, b, c, d, f, g)
+        if with_np:
+            def func(x):
+                x = torch.tensor(x)
+                return act_function_p(x, alpha, a, b, c, d, f, g)
+        else:
+            def func(x):
+                return act_function_p(x, alpha, a, b, c, d, f, g)
 
         return func
 
@@ -301,7 +311,7 @@ class ActivationFunctionPos(torch.nn.Module):
 
             return self.forward(x)
 
-    def to_function(self):
+    def to_function(self, with_np = False):
         alpha = self.alpha.item()
 
         a = self.a.item()
@@ -313,12 +323,17 @@ class ActivationFunctionPos(torch.nn.Module):
         f = self.f.item()
         g = self.g.item()
 
-        def func(x):
-            return act_function_pos(x, alpha, a, b, c, d, f, g, h)
+        if with_np:
+            def func(x):
+                x = torch.tensor(x)
+                return act_function_pos(x, alpha, a, b, c, d, f, g, h)
+        else:
+            def func(x):
+                return act_function_pos(x, alpha, a, b, c, d, f, g, h)
 
         return func
 
-    def to_function_p(self):
+    def to_function_p(self, with_np = False):
         alpha = self.alpha.item()
 
         a = self.a.item()
@@ -330,7 +345,12 @@ class ActivationFunctionPos(torch.nn.Module):
         f = self.f.item()
         g = self.g.item()
 
-        def func(x):
-            return act_function_pos_p(x, alpha, a, b, c, d, f, g, h)
+        if with_np:
+            def func(x):
+                x = torch.tensor(x)
+                return act_function_pos_p(x, alpha, a, b, c, d, f, g, h)
+        else:
+            def func(x):
+                return act_function_pos_p(x, alpha, a, b, c, d, f, g, h)
 
         return func

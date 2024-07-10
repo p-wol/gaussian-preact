@@ -2,7 +2,14 @@ import matplotlib.pyplot as plt
 
 def build_label(param):
     if param['act_function'] == 'weibull':
-        return r'$\phi_{{\theta}}$, $\theta = {:.2f}$'.format(param['act_theta'])
+        if 'act_type' not in param.keys():
+            return r'$\phi_{{\theta}}$, $\theta = {:.2f}$'.format(param['act_theta'])
+        elif param['act_type'] == 'odd':
+            return r'$\phi_{{\theta}}^{{\mathrm{{o}}}}$, $\theta = {:.2f}$'.format(param['act_theta'])
+        elif param['act_type'] == 'pos':
+            return r'$\phi_{{\theta}}^{{\mathrm{{p}}}}$, $\theta = {:.2f}$'.format(param['act_theta'])
+        else:
+            raise ValueError('Error: unrecognized act_type: {}'.format(param['act_type']))
     elif 'logexp' in param['act_function']:
         omega = extract_param(param['act_function'], 'omega-')
         return r'$\varphi_{{0.99, \omega}}$, $\omega = {:.2f}$'.format(omega)

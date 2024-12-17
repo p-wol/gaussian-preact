@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gaussian-preact"
+version = "0.0.3"
+dependencies = [
+	"scipy >= 1.9.3",
+    "numpy >= 1.23.5",
+    "torch >= 2.0.0",
+    "matplotlib >= 3.8.0"
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Pierre Wolinski", email = "pierre.wolinski@normalesup.org"},
+]
+maintainers = [
+  {name = "Pierre Wolinski", email = "pierre.wolinski@normalesup.org"},
+]
+description="Computations related to the paper \"Gaussian Pre-Activations in Neural Networks: Myth or Reality?\""
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["machine learning", "deep learning", "pre-activations", "initialization"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gaussian_preact"]
+
+[project.urls]
+Homepage = "https://github.com/p-wol/gaussian-preact"
+Documentation = "https://github.com/p-wol/gaussian-preact"
+Repository = "https://github.com/p-wol/gaussian-preact"

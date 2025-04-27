@@ -3,6 +3,11 @@ Computations related to the paper [Gaussian Pre-Activations in Neural Networks: 
 
 This package computes the functions $\phi_{\theta}$. One can try the main features of this package by using `Example01_Full_computation.ipynb`.
 
+Notebooks:
+* `Example01_Full_computation.ipynb`: full computation of the odd activation functions $\phi_{\theta}^{\text{o}}$;
+* `Example02_positive_phi.ipynb`: computation of the positive activation functions $\phi_{\theta}^{\text{p}}$;
+* `Example03_Gaussianity.ipynb`: tests of the gaussianity of the pre-activations when using $\phi_{\theta}^{\text{o/p}}$.
+
 ## Reminder
 
 We want to find a pair $(\mathrm{P}, \phi)$ such that:
